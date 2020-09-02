@@ -354,6 +354,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 exports.__esModule = true;
 var core = __importStar(__webpack_require__(186));
+core.setOutput("ACTIONS_RUNNER_DEBUG", "true");
 core.debug("Hello world");
 
 

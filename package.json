@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/molleer/blame-alert#readme",
   "devDependencies": {
+    "@types/git": "0.0.18",
     "@types/node": "^14.6.3",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
@@ -27,6 +28,7 @@
   "dependencies": {
     "@actions/core": "^1.2.5",
     "@actions/github": "^4.0.0",
-    "@vercel/ncc": "^0.24.0"
+    "@vercel/ncc": "^0.24.0",
+    "git": "^0.1.5"
   }
 }
