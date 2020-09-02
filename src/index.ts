@@ -1,8 +1,11 @@
 import * as core from "@actions/core";
+import * as git from "run-git-command";
 
-const run = () => {
-  core.setOutput("ACTIONS_RUNNER_DEBUG", "true");
+core.debug("Hello from before");
+
+const run = async (): Promise<void> => {
   core.debug("Hello world");
+  //git diff github.base_ref github.head_ref
 };
 
 run();
