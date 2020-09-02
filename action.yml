@@ -1,0 +1,13 @@
+name: Blame Alert
+description: GiHub action which tags users whose code has been removed in a PR
+author: David Möller
+branding:
+  icon: alert-circle
+  color: orange
+#inputs:
+#  GITHUB_TOKEN: #Github token
+#    description: "Github token for the repository."
+#    required: true
+runs:
+  using: node12
+  main: index.js
