@@ -1,7 +1,9 @@
 import * as github from "@actions/github";
 import * as git from "run-git-command";
+import * as core from "@actions/core";
 import githubUsername from "github-username";
 import Axios from "axios";
+import { context } from "@actions/github/lib/utils";
 
 interface Change {
   from: number;
@@ -65,6 +67,19 @@ const run = async (): Promise<void> => {
   /*
    * 4. Write a comment, tagging all relevant users
    */
+
+  let message = "Your code will change with this PR!";
+
+  for (let i = 0; i < userNames.length; i++) {
+    message += " @" + userNames[i];
+  }
+
+  const octokit = github.getOctokit(core.getInput("GITHUB_TOKEN"));
+  octokit.issues.createComment({
+    ...context.repo,
+    issue_number: github.context.payload.pull_request.number,
+    body: message
+  });
   //git diff github.base_ref github.head_ref
 };
 
