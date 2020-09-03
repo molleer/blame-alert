@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc",
-    "start": "ts-node-dev src/index.ts",
+    "test": "ts-node-dev src/index.specs.ts",
     "package": "ncc build"
   },
   "repository": {

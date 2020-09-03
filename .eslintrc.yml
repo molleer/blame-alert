@@ -8,6 +8,7 @@ parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: 6
   sourceType: module
+  esModuleInterop: true
 plugins:
   - "@typescript-eslint"
 rules:

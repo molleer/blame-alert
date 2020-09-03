@@ -1,5 +1,6 @@
 import * as github from "@actions/github";
 import * as git from "run-git-command";
+import githubUsername from "github-username";
 import Axios from "axios";
 
 interface Change {
@@ -50,6 +51,15 @@ const run = async (): Promise<void> => {
 
   /*
    * 3. use github-username to get the username of each user
+   */
+
+  const userNames = [...new Set(emails)].map(
+    async email => await githubUsername(email)
+  );
+
+  console.log(userNames);
+
+  /*
    * 4. Write a comment, tagging all relevant users
    */
   //git diff github.base_ref github.head_ref
