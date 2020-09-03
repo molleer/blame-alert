@@ -9227,7 +9227,7 @@ var github = __importStar(__webpack_require__(5438));
 var git = __importStar(__webpack_require__(8353));
 var axios_1 = __importDefault(__webpack_require__(6545));
 var run = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var diff_url, res, changes, i;
+    var base, diff_url, res, changes, i, ans;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -9239,6 +9239,7 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                     console.log("No base repo found");
                     return [2 /*return*/];
                 }
+                base = github.context.payload.pull_request.base.ref;
                 diff_url = github.context.payload.pull_request.diff_url;
                 return [4 /*yield*/, axios_1["default"].get(diff_url)];
             case 1:
@@ -9248,21 +9249,28 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                 console.log(changes);
                 if (changes === [])
                     return [2 /*return*/];
-                /*
-                 * 2. Fetch the email of authors of deleted diff
-                 *     - Parse git blame --line-porcelain -L <lines> <file>
-                 */
-                for (i = 0; i < changes.length; i++) {
-                    git
-                        .execGitCmd([
+                i = 0;
+                _a.label = 2;
+            case 2:
+                if (!(i < changes.length)) return [3 /*break*/, 6];
+                return [4 /*yield*/, git.execGitCmd(["checkout", base])];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, git.execGitCmd([
                         "blame",
                         "--line-porcelain",
                         "-L",
-                        changes[i].from + "," + changes[i].to
-                    ])
-                        .then(function (res) { return console.log(res); });
-                }
-                return [2 /*return*/];
+                        changes[i].from + "," + changes[i].to,
+                        changes[i].file
+                    ])];
+            case 4:
+                ans = _a.sent();
+                console.log(ans);
+                _a.label = 5;
+            case 5:
+                i++;
+                return [3 /*break*/, 2];
+            case 6: return [2 /*return*/];
         }
     });
 }); };
@@ -9291,19 +9299,7 @@ var parseDiff = function (diff) {
     }
     return changes;
 };
-console.log(parseDiff("diff --git a/README.md b/README.md\n" +
-    "index 95a2896..267ee18 100644\n" +
-    "--- a/README.md\n" +
-    "+++ b/README.md\n" +
-    "@@ -20,3 +20,7 @@ kubernetes-test-site should be running at `mollers.se`\n" +
-    " ```\n" +
-    " \n" +
-    " Traefik will work as you default ingress controller\n" +
-    "+\n" +
-    "+# Gihub Actions\n" +
-    "+\n" +
-    "+Coming documentation soon\n"));
-//run();
+run();
 
 
 /***/ }),
