@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
     "lib": ["ES6"],
-    "module": "commonjs",
+    "module": "CommonJS",
     "outDir": "./lib",
     "rootDir": "./src",
     "strict": true,
     "noImplicitAny": true,
     "esModuleInterop": true
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "lib/**/*", "dist/**/*"]
 }
