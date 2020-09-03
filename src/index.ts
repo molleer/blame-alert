@@ -26,6 +26,7 @@ const run = async (): Promise<void> => {
    * 3. use github-username to get the username of each user
    * 4. Write a comment, tagging all relevant users
    */
+  console.log(github.context);
   //git diff github.base_ref github.head_ref
 };
 
