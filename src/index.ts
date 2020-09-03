@@ -34,22 +34,32 @@ const run = async (): Promise<void> => {
    *     - Parse git blame --line-porcelain -L <lines> <file>
    */
 
+  const emails: string[] = [];
+
   for (let i = 0; i < changes.length; i++) {
-    const ans = await git.execGitCmd([
+    const blame = await git.execGitCmd([
       "blame",
       "--line-porcelain",
       "-L",
       changes[i].from + "," + changes[i].to,
       changes[i].file
     ]);
-    console.log(ans);
+
+    emails.push(...parseBlame(String(blame)));
   }
+  console.log(emails);
 
   /*
    * 3. use github-username to get the username of each user
    * 4. Write a comment, tagging all relevant users
    */
   //git diff github.base_ref github.head_ref
+};
+
+const parseBlame = (blame: string): string[] => {
+  const foundMails = blame.match(/author-mail <.*>\n/);
+  if (!foundMails) return [];
+  return foundMails.map(mail => mail.substr(13, mail.length - 1));
 };
 
 const parseDiff = (diff: string): Change[] => {

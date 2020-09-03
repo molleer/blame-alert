@@ -9227,7 +9227,7 @@ var github = __importStar(__webpack_require__(5438));
 var git = __importStar(__webpack_require__(8353));
 var axios_1 = __importDefault(__webpack_require__(6545));
 var run = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var diff_url, res, changes, i, ans;
+    var diff_url, res, changes, emails, i, blame;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -9248,6 +9248,7 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                 console.log(changes);
                 if (changes === [])
                     return [2 /*return*/];
+                emails = [];
                 i = 0;
                 _a.label = 2;
             case 2:
@@ -9260,16 +9261,24 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                         changes[i].file
                     ])];
             case 3:
-                ans = _a.sent();
-                console.log(ans);
+                blame = _a.sent();
+                emails.push.apply(emails, parseBlame(String(blame)));
                 _a.label = 4;
             case 4:
                 i++;
                 return [3 /*break*/, 2];
-            case 5: return [2 /*return*/];
+            case 5:
+                console.log(emails);
+                return [2 /*return*/];
         }
     });
 }); };
+var parseBlame = function (blame) {
+    var foundMails = blame.match(/author-mail <.*>\n/);
+    if (!foundMails)
+        return [];
+    return foundMails.map(function (mail) { return mail.substr(13, mail.length - 1); });
+};
 var parseDiff = function (diff) {
     var diffs = diff.split("diff --git");
     var changes = [];
