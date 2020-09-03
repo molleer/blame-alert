@@ -9,35 +9,23 @@ interface Change {
   from: number;
   to: number;
   file: string;
-  authors?: string[];
 }
 
 const run = async (): Promise<void> => {
-  /**
-   * 1. Fetch the diff between tow branches
-   *      - Get the branch names of base and current
-   */
-
-  if (!github.context.payload.pull_request) {
-    console.log("No base repo found");
+  //Checks if there have been a pull request
+  const request = github.context.payload.pull_request;
+  if (!request) {
+    console.log("No pull request found");
     return;
   }
 
-  const diff_url = github.context.payload.pull_request.diff_url;
-
-  const res = await Axios.get(diff_url);
+  //Fetches and parses diff
+  const res = await Axios.get(request.diff_url);
   const changes: Change[] = parseDiff(res.data);
   console.log(changes);
 
-  if (changes === []) return;
-
-  /*
-   * 2. Fetch the email of authors of deleted diff
-   *     - Parse git blame --line-porcelain -L <lines> <file>
-   */
-
+  //Retrieves the emails of the authors of the modified code
   const emails: string[] = [];
-
   for (let i = 0; i < changes.length; i++) {
     const blame = await git.execGitCmd([
       "blame",
@@ -49,46 +37,45 @@ const run = async (): Promise<void> => {
 
     emails.push(...parseBlame(String(blame)));
   }
-  console.log(emails);
 
-  /*
-   * 3. use github-username to get the username of each user
-   */
-
-  const userNames: string[] = [];
+  //Fetching user names using their emails
+  let userNames: string[] = [];
   const emailSet = [...new Set(emails)];
   for (let i = 0; i < emailSet.length; i++) {
     const username: string = await githubUsername(emails[i]).catch(() => "");
     userNames.push(username);
   }
+  userNames = [...new Set(userNames)];
 
-  console.log(userNames);
-
-  /*
-   * 4. Write a comment, tagging all relevant users
-   */
-
+  //Creates a message which will be commented on the PR
   let message = "Your code will change with this PR!";
-
   for (let i = 0; i < userNames.length; i++) {
     message += " @" + userNames[i];
   }
 
+  //Commenting on the PR
   const octokit = github.getOctokit(core.getInput("GITHUB_TOKEN"));
   octokit.issues.createComment({
     ...context.repo,
-    issue_number: github.context.payload.pull_request.number,
+    issue_number: request.number,
     body: message
   });
-  //git diff github.base_ref github.head_ref
 };
 
+/**
+ * Returns the author emails of blame response
+ * @param blame the blame response
+ */
 const parseBlame = (blame: string): string[] => {
   const foundMails = blame.match(/author-mail <.*?>/g);
   if (!foundMails) return [];
   return foundMails.map(mail => mail.substr(13, mail.length - 14));
 };
 
+/**
+ * Parses the git diff output to a list of Change objects
+ * @param diff the diff output
+ */
 const parseDiff = (diff: string): Change[] => {
   const diffs = diff.split("diff --git");
   const changes: Change[] = [];
