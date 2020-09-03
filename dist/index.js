@@ -9235,7 +9235,6 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                  * 1. Fetch the diff between tow branches
                  *      - Get the branch names of base and current
                  */
-                console.log(github.context);
                 if (!github.context.payload.pull_request) {
                     console.log("No base repo found");
                     return [2 /*return*/];
@@ -9244,6 +9243,7 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                 return [4 /*yield*/, axios_1["default"].get(diff_url)];
             case 1:
                 res = _a.sent();
+                console.log(res);
                 changes = parseDiff(res.data);
                 console.log(changes);
                 if (changes === [])

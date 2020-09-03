@@ -14,7 +14,7 @@ const run = async (): Promise<void> => {
    * 1. Fetch the diff between tow branches
    *      - Get the branch names of base and current
    */
-  console.log(github.context);
+
   if (!github.context.payload.pull_request) {
     console.log("No base repo found");
     return;
@@ -24,6 +24,7 @@ const run = async (): Promise<void> => {
   const diff_url = github.context.payload.pull_request.diff_url;
 
   const res = await Axios.get(diff_url);
+  console.log(res);
   const changes: Change[] = parseDiff(res.data);
   console.log(changes);
 
