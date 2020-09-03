@@ -25,7 +25,7 @@ const run = async (): Promise<void> => {
   );
   const userNames: string[] = await getUserNames(emails).catch(() => []);
 
-  if (userNames == []) {
+  if (userNames.length == 0) {
     console.log("No existing code changed");
     return;
   }

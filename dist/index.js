@@ -13962,7 +13962,7 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                 return [4 /*yield*/, utils_2.getUserNames(emails)["catch"](function () { return []; })];
             case 3:
                 userNames = _a.sent();
-                if (userNames == []) {
+                if (userNames.length == 0) {
                     console.log("No existing code changed");
                     return [2 /*return*/];
                 }
