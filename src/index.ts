@@ -14,13 +14,15 @@ const run = async (): Promise<void> => {
   }
 
   //Fetches and parses diff
-  const res = await Axios.get(request.diff_url);
+  const res = await Axios.get(request.diff_url).catch(() => {
+    return { data: "" };
+  });
   const changes: Change[] = parseDiff(res.data);
   console.log(changes);
 
   //Retrieves the usernames of the authors of the modified code
-  const emails: string[] = await getAuthors(changes);
-  const userNames: string[] = await getUserNames(emails);
+  const emails: string[] = await getAuthors(changes).catch(() => []);
+  const userNames: string[] = await getUserNames(emails).catch(() => []);
 
   //Creates a message which will be commented on the PR
   let message = "Your code will change with this PR!";
@@ -45,13 +47,15 @@ const run = async (): Promise<void> => {
 const getAuthors = async (changes: Change[]): Promise<string[]> => {
   const emails: string[] = [];
   for (let i = 0; i < changes.length; i++) {
-    const blame = await git.execGitCmd([
-      "blame",
-      "--line-porcelain",
-      "-L",
-      changes[i].from + "," + changes[i].to,
-      changes[i].file
-    ]);
+    const blame = await git
+      .execGitCmd([
+        "blame",
+        "--line-porcelain",
+        "-L",
+        changes[i].from + "," + changes[i].to,
+        changes[i].file
+      ])
+      .catch(() => "");
 
     emails.push(...parseBlame(String(blame)));
   }
