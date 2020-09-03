@@ -5530,6 +5530,10 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
          *      - Get the branch names of base and current
          */
         console.log(github.context);
+        if (github.context.payload.pull_request) {
+            console.log(github.context.payload.pull_request.head);
+            console.log(github.context.payload.pull_request.diff_url);
+        }
         base = github.context.payload.base_ref;
         console.log("Pull request base: " + base);
         if (!base) {

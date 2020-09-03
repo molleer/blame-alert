@@ -28,6 +28,7 @@
     "@actions/core": "^1.2.5",
     "@actions/github": "^4.0.0",
     "@vercel/ncc": "^0.24.0",
+    "axios": "^0.20.0",
     "github-username": "^5.0.1",
     "run-git-command": "^1.2.3"
   }
