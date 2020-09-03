@@ -33,6 +33,5 @@
     "axios": "^0.20.0",
     "github-username": "^5.0.1",
     "run-git-command": "^1.2.3"
-  },
-  "type": "module"
+  }
 }
