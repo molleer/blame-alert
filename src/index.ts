@@ -58,7 +58,7 @@ const parseDiff = (diff: string): Change[] => {
   const changes: Change[] = [];
 
   for (let i = 0; i < diffs.length; i++) {
-    const matchFile = diffs[i].match(/--- a\/.*?\+.*?/);
+    const matchFile = diffs[i].match(/--- a\/.*\n/);
     const lines = diffs[i].match(/@@ -[0-9]*,[0-9]* \+[0-9]*,[0-9]* @@/g);
 
     if (!lines || !matchFile) continue;

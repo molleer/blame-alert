@@ -9270,7 +9270,7 @@ var parseDiff = function (diff) {
     var diffs = diff.split("diff --git");
     var changes = [];
     for (var i = 0; i < diffs.length; i++) {
-        var matchFile = diffs[i].match(/--- a\/.*?\+.*?/);
+        var matchFile = diffs[i].match(/--- a\/.*\n/);
         var lines = diffs[i].match(/@@ -[0-9]*,[0-9]* \+[0-9]*,[0-9]* @@/g);
         if (!lines || !matchFile)
             continue;
@@ -9291,7 +9291,19 @@ var parseDiff = function (diff) {
     }
     return changes;
 };
-run();
+console.log(parseDiff("diff --git a/README.md b/README.md\n" +
+    "index 95a2896..267ee18 100644\n" +
+    "--- a/README.md\n" +
+    "+++ b/README.md\n" +
+    "@@ -20,3 +20,7 @@ kubernetes-test-site should be running at `mollers.se`\n" +
+    " ```\n" +
+    " \n" +
+    " Traefik will work as you default ingress controller\n" +
+    "+\n" +
+    "+# Gihub Actions\n" +
+    "+\n" +
+    "+Coming documentation soon\n"));
+//run();
 
 
 /***/ }),
