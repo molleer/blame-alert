@@ -13948,15 +13948,17 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                     console.log("No pull request found");
                     return [2 /*return*/];
                 }
-                return [4 /*yield*/, axios_1["default"].get(request.diff_url)];
+                return [4 /*yield*/, axios_1["default"].get(request.diff_url)["catch"](function () {
+                        return { data: "" };
+                    })];
             case 1:
                 res = _a.sent();
                 changes = utils_2.parseDiff(res.data);
                 console.log(changes);
-                return [4 /*yield*/, getAuthors(changes)];
+                return [4 /*yield*/, getAuthors(changes)["catch"](function () { return []; })];
             case 2:
                 emails = _a.sent();
-                return [4 /*yield*/, utils_2.getUserNames(emails)];
+                return [4 /*yield*/, utils_2.getUserNames(emails)["catch"](function () { return []; })];
             case 3:
                 userNames = _a.sent();
                 message = "Your code will change with this PR!";
@@ -13984,13 +13986,14 @@ var getAuthors = function (changes) { return __awaiter(void 0, void 0, void 0, f
                 _a.label = 1;
             case 1:
                 if (!(i < changes.length)) return [3 /*break*/, 4];
-                return [4 /*yield*/, git.execGitCmd([
+                return [4 /*yield*/, git
+                        .execGitCmd([
                         "blame",
                         "--line-porcelain",
                         "-L",
                         changes[i].from + "," + changes[i].to,
                         changes[i].file
-                    ])];
+                    ])["catch"](function () { return ""; })];
             case 2:
                 blame = _a.sent();
                 emails.push.apply(emails, __spread(utils_2.parseBlame(String(blame))));
