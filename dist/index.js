@@ -9243,7 +9243,6 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                 return [4 /*yield*/, axios_1["default"].get(diff_url)];
             case 1:
                 res = _a.sent();
-                console.log(res);
                 changes = parseDiff(res.data);
                 console.log(changes);
                 if (changes === [])
@@ -9274,10 +9273,10 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
     });
 }); };
 var parseBlame = function (blame) {
-    var foundMails = blame.match(/author-mail <.*>\n/);
+    var foundMails = blame.match(/author-mail <.*?>/g);
     if (!foundMails)
         return [];
-    return foundMails.map(function (mail) { return mail.substr(13, mail.length - 1); });
+    return foundMails.map(function (mail) { return mail.substr(13, mail.length - 14); });
 };
 var parseDiff = function (diff) {
     var diffs = diff.split("diff --git");

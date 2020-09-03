@@ -23,7 +23,6 @@ const run = async (): Promise<void> => {
   const diff_url = github.context.payload.pull_request.diff_url;
 
   const res = await Axios.get(diff_url);
-  console.log(res);
   const changes: Change[] = parseDiff(res.data);
   console.log(changes);
 
@@ -57,9 +56,9 @@ const run = async (): Promise<void> => {
 };
 
 const parseBlame = (blame: string): string[] => {
-  const foundMails = blame.match(/author-mail <.*>\n/);
+  const foundMails = blame.match(/author-mail <.*?>/g);
   if (!foundMails) return [];
-  return foundMails.map(mail => mail.substr(13, mail.length - 1));
+  return foundMails.map(mail => mail.substr(13, mail.length - 14));
 };
 
 const parseDiff = (diff: string): Change[] => {
