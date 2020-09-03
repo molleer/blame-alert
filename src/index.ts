@@ -54,8 +54,10 @@ const run = async (): Promise<void> => {
    */
 
   const userNames: string[] = [];
-  for (const email in [...new Set(emails)]) {
-    userNames.push(await githubUsername(email));
+  const emailSet = [...new Set(emails)];
+  for (let i = 0; i < emailSet.length; i++) {
+    const username: string = await githubUsername(emails[i]).catch(() => "");
+    userNames.push(username);
   }
 
   console.log(userNames);
