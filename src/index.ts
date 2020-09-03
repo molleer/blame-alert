@@ -20,7 +20,6 @@ const run = async (): Promise<void> => {
     return;
   }
 
-  const base = github.context.payload.pull_request.base.ref;
   const diff_url = github.context.payload.pull_request.diff_url;
 
   const res = await Axios.get(diff_url);
@@ -36,7 +35,6 @@ const run = async (): Promise<void> => {
    */
 
   for (let i = 0; i < changes.length; i++) {
-    await git.execGitCmd(["checkout", base]);
     const ans = await git.execGitCmd([
       "blame",
       "--line-porcelain",

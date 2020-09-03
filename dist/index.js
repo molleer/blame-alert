@@ -9227,7 +9227,7 @@ var github = __importStar(__webpack_require__(5438));
 var git = __importStar(__webpack_require__(8353));
 var axios_1 = __importDefault(__webpack_require__(6545));
 var run = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var base, diff_url, res, changes, i, ans;
+    var diff_url, res, changes, i, ans;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -9239,7 +9239,6 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                     console.log("No base repo found");
                     return [2 /*return*/];
                 }
-                base = github.context.payload.pull_request.base.ref;
                 diff_url = github.context.payload.pull_request.diff_url;
                 return [4 /*yield*/, axios_1["default"].get(diff_url)];
             case 1:
@@ -9252,10 +9251,7 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                 i = 0;
                 _a.label = 2;
             case 2:
-                if (!(i < changes.length)) return [3 /*break*/, 6];
-                return [4 /*yield*/, git.execGitCmd(["checkout", base])];
-            case 3:
-                _a.sent();
+                if (!(i < changes.length)) return [3 /*break*/, 5];
                 return [4 /*yield*/, git.execGitCmd([
                         "blame",
                         "--line-porcelain",
@@ -9263,14 +9259,14 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                         changes[i].from + "," + changes[i].to,
                         changes[i].file
                     ])];
-            case 4:
+            case 3:
                 ans = _a.sent();
                 console.log(ans);
-                _a.label = 5;
-            case 5:
+                _a.label = 4;
+            case 4:
                 i++;
                 return [3 /*break*/, 2];
-            case 6: return [2 /*return*/];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
