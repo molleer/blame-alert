@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc",
+    "start": "ts-node-dev src/index.ts",
     "package": "ncc build"
   },
   "repository": {
@@ -22,6 +23,7 @@
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
     "eslint": "^7.8.1",
+    "ts-node-dev": "^1.0.0-pre.62",
     "typescript": "^4.0.2"
   },
   "dependencies": {
