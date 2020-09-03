@@ -1,5 +1,4 @@
 import githubUsername from "github-username";
-import * as git from "run-git-command";
 
 export interface Change {
   from: number;
@@ -66,25 +65,4 @@ export const getUserNames = async (emails: string[]): Promise<string[]> => {
     userNames.push(username);
   }
   return [...new Set(userNames)];
-};
-
-/**
- * Fetches author emails
- * @param changes all changes in the code
- * @return the email of each author whose code has been modified
- */
-export const getAuthors = async (changes: Change[]): Promise<string[]> => {
-  const emails: string[] = [];
-  for (let i = 0; i < changes.length; i++) {
-    const blame = await git.execGitCmd([
-      "blame",
-      "--line-porcelain",
-      "-L",
-      changes[i].from + "," + changes[i].to,
-      changes[i].file
-    ]);
-
-    emails.push(...parseBlame(String(blame)));
-  }
-  return [...new Set(emails)];
 };
