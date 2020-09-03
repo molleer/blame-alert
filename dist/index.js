@@ -5525,6 +5525,11 @@ var git = __importStar(__webpack_require__(353));
 var run = function () { return __awaiter(void 0, void 0, void 0, function () {
     var base;
     return __generator(this, function (_a) {
+        /**
+         * 1. Fetch the diff between tow branches
+         *      - Get the branch names of base and current
+         */
+        console.log(github.context);
         base = github.context.payload.base_ref;
         console.log("Pull request base: " + base);
         if (!base) {
@@ -5537,13 +5542,6 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
             console.log("Something faild while trying to get diff");
             console.log(err);
         });
-        /*
-         * 2. Fetch the email of authors of deleted diff
-         *     - Parse git blame --line-porcelain -L <lines> <file>
-         * 3. use github-username to get the username of each user
-         * 4. Write a comment, tagging all relevant users
-         */
-        console.log(github.context);
         return [2 /*return*/];
     });
 }); };

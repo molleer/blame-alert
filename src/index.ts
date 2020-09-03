@@ -6,6 +6,8 @@ const run = async (): Promise<void> => {
    * 1. Fetch the diff between tow branches
    *      - Get the branch names of base and current
    */
+
+  console.log(github.context);
   const base = github.context.payload.base_ref;
   console.log(`Pull request base: ${base}`);
   if (!base) {
@@ -26,7 +28,6 @@ const run = async (): Promise<void> => {
    * 3. use github-username to get the username of each user
    * 4. Write a comment, tagging all relevant users
    */
-  console.log(github.context);
   //git diff github.base_ref github.head_ref
 };
 
