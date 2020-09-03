@@ -20,10 +20,10 @@ const run = async (): Promise<void> => {
     return;
   }
 
-  const base = github.context.payload.pull_request.base.ref;
+  //const base = github.context.payload.pull_request.base.ref;
   const diff_url = github.context.payload.pull_request.diff_url;
 
-  let res = await Axios.get(diff_url);
+  const res = await Axios.get(diff_url);
   const changes: Change[] = parseDiff(res.data);
   console.log(changes);
 
@@ -81,4 +81,4 @@ const parseDiff = (diff: string): Change[] => {
   return changes;
 };
 
-//run();
+run();
