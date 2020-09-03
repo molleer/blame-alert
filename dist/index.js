@@ -13598,9 +13598,9 @@ var git = __importStar(__webpack_require__(8353));
 var github_username_1 = __importDefault(__webpack_require__(8661));
 var axios_1 = __importDefault(__webpack_require__(6545));
 var run = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var diff_url, res, changes, emails, i, blame, userNames;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var diff_url, res, changes, emails, i, blame, userNames, _a, _b, _i, email, _c, _d;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
             case 0:
                 /**
                  * 1. Fetch the diff between tow branches
@@ -13613,14 +13613,14 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                 diff_url = github.context.payload.pull_request.diff_url;
                 return [4 /*yield*/, axios_1["default"].get(diff_url)];
             case 1:
-                res = _a.sent();
+                res = _e.sent();
                 changes = parseDiff(res.data);
                 console.log(changes);
                 if (changes === [])
                     return [2 /*return*/];
                 emails = [];
                 i = 0;
-                _a.label = 2;
+                _e.label = 2;
             case 2:
                 if (!(i < changes.length)) return [3 /*break*/, 5];
                 return [4 /*yield*/, git.execGitCmd([
@@ -13631,20 +13631,32 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                         changes[i].file
                     ])];
             case 3:
-                blame = _a.sent();
+                blame = _e.sent();
                 emails.push.apply(emails, __spread(parseBlame(String(blame))));
-                _a.label = 4;
+                _e.label = 4;
             case 4:
                 i++;
                 return [3 /*break*/, 2];
             case 5:
                 console.log(emails);
-                userNames = __spread(new Set(emails)).map(function (email) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, github_username_1["default"](email)];
-                        case 1: return [2 /*return*/, _a.sent()];
-                    }
-                }); }); });
+                userNames = [];
+                _a = [];
+                for (_b in __spread(new Set(emails)))
+                    _a.push(_b);
+                _i = 0;
+                _e.label = 6;
+            case 6:
+                if (!(_i < _a.length)) return [3 /*break*/, 9];
+                email = _a[_i];
+                _d = (_c = userNames).push;
+                return [4 /*yield*/, github_username_1["default"](email)];
+            case 7:
+                _d.apply(_c, [_e.sent()]);
+                _e.label = 8;
+            case 8:
+                _i++;
+                return [3 /*break*/, 6];
+            case 9:
                 console.log(userNames);
                 return [2 /*return*/];
         }

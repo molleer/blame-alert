@@ -53,9 +53,10 @@ const run = async (): Promise<void> => {
    * 3. use github-username to get the username of each user
    */
 
-  const userNames = [...new Set(emails)].map(
-    async email => await githubUsername(email)
-  );
+  const userNames: string[] = [];
+  for (const email in [...new Set(emails)]) {
+    userNames.push(await githubUsername(email));
+  }
 
   console.log(userNames);
 
