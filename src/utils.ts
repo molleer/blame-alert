@@ -1,4 +1,5 @@
 import githubUsername from "github-username";
+import * as core from "@actions/core";
 
 export interface Change {
   from: number;
@@ -61,8 +62,16 @@ export const parseDiff = (diff: string): Change[] => {
 export const getUserNames = async (emails: string[]): Promise<string[]> => {
   const userNames: string[] = [];
   for (let i = 0; i < emails.length; i++) {
-    const username: string = await githubUsername(emails[i]).catch(() => "");
+    const username: string = await githubUsername(emails[i]).catch(err =>
+      handle("Unable to fetch username", err, "")
+    );
     userNames.push(username);
   }
   return [...new Set(userNames)];
+};
+
+export const handle = <T>(message: string, err: string, catchValue: T): T => {
+  core.debug(message);
+  core.debug(err);
+  return catchValue;
 };

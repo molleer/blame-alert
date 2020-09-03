@@ -13948,19 +13948,24 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                     console.log("No pull request found");
                     return [2 /*return*/];
                 }
-                return [4 /*yield*/, axios_1["default"].get(request.diff_url)["catch"](function () {
-                        return { data: "" };
+                return [4 /*yield*/, axios_1["default"].get(request.diff_url)["catch"](function (err) {
+                        return utils_2.handle("Failed to fetch diff file", err, { data: "" });
                     })];
             case 1:
                 res = _a.sent();
                 changes = utils_2.parseDiff(res.data);
-                console.log(changes);
-                return [4 /*yield*/, getAuthors(changes)["catch"](function () { return []; })];
+                return [4 /*yield*/, getAuthors(changes)["catch"](function (err) {
+                        return utils_2.handle("Failed to fetch author emails", err, []);
+                    })];
             case 2:
                 emails = _a.sent();
                 return [4 /*yield*/, utils_2.getUserNames(emails)["catch"](function () { return []; })];
             case 3:
                 userNames = _a.sent();
+                if (userNames == []) {
+                    console.log("No existing code changed");
+                    return [2 /*return*/];
+                }
                 message = "Your code will change with this PR!";
                 for (i = 0; i < userNames.length; i++) {
                     message += " @" + userNames[i];
@@ -13993,7 +13998,7 @@ var getAuthors = function (changes) { return __awaiter(void 0, void 0, void 0, f
                         "-L",
                         changes[i].from + "," + changes[i].to,
                         changes[i].file
-                    ])["catch"](function () { return ""; })];
+                    ])["catch"](function (err) { return utils_2.handle("Unable to execute git blame command", err, ""); })];
             case 2:
                 blame = _a.sent();
                 emails.push.apply(emails, __spread(utils_2.parseBlame(String(blame))));
@@ -14015,6 +14020,25 @@ run();
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14075,8 +14099,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.getUserNames = exports.parseDiff = exports.parseBlame = void 0;
+exports.handle = exports.getUserNames = exports.parseDiff = exports.parseBlame = void 0;
 var github_username_1 = __importDefault(__webpack_require__(8661));
+var core = __importStar(__webpack_require__(2186));
 /**
  * Returns the author emails of blame response
  * @param blame the blame response
@@ -14135,7 +14160,9 @@ exports.getUserNames = function (emails) { return __awaiter(void 0, void 0, void
                 _a.label = 1;
             case 1:
                 if (!(i < emails.length)) return [3 /*break*/, 4];
-                return [4 /*yield*/, github_username_1["default"](emails[i])["catch"](function () { return ""; })];
+                return [4 /*yield*/, github_username_1["default"](emails[i])["catch"](function (err) {
+                        return exports.handle("Unable to fetch username", err, "");
+                    })];
             case 2:
                 username = _a.sent();
                 userNames.push(username);
@@ -14147,6 +14174,11 @@ exports.getUserNames = function (emails) { return __awaiter(void 0, void 0, void
         }
     });
 }); };
+exports.handle = function (message, err, catchValue) {
+    core.debug(message);
+    core.debug(err);
+    return catchValue;
+};
 
 
 /***/ }),

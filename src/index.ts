@@ -3,7 +3,7 @@ import * as core from "@actions/core";
 import * as git from "run-git-command";
 import Axios from "axios";
 import { context } from "@actions/github/lib/utils";
-import { Change, parseDiff, getUserNames, parseBlame } from "./utils";
+import { Change, parseDiff, getUserNames, parseBlame, handle } from "./utils";
 
 const run = async (): Promise<void> => {
   //Checks if there have been a pull request
@@ -14,15 +14,21 @@ const run = async (): Promise<void> => {
   }
 
   //Fetches and parses diff
-  const res = await Axios.get(request.diff_url).catch(() => {
-    return { data: "" };
-  });
+  const res = await Axios.get(request.diff_url).catch(err =>
+    handle("Failed to fetch diff file", err, { data: "" })
+  );
   const changes: Change[] = parseDiff(res.data);
-  console.log(changes);
 
   //Retrieves the usernames of the authors of the modified code
-  const emails: string[] = await getAuthors(changes).catch(() => []);
+  const emails: string[] = await getAuthors(changes).catch(err =>
+    handle("Failed to fetch author emails", err, [])
+  );
   const userNames: string[] = await getUserNames(emails).catch(() => []);
+
+  if (userNames == []) {
+    console.log("No existing code changed");
+    return;
+  }
 
   //Creates a message which will be commented on the PR
   let message = "Your code will change with this PR!";
@@ -55,7 +61,7 @@ const getAuthors = async (changes: Change[]): Promise<string[]> => {
         changes[i].from + "," + changes[i].to,
         changes[i].file
       ])
-      .catch(() => "");
+      .catch(err => handle("Unable to execute git blame command", err, ""));
 
     emails.push(...parseBlame(String(blame)));
   }
