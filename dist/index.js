@@ -5068,6 +5068,51 @@ function onceStrict (fn) {
 
 /***/ }),
 
+/***/ 353:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "execGitCmd": () => /* binding */ execGitCmd
+/* harmony export */ });
+/* harmony import */ var child_process__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(129);
+/* harmony import */ var child_process__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(child_process__WEBPACK_IMPORTED_MODULE_0__);
+var __assign = (undefined && undefined.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+
+var defaultConfig = {
+    execOptions: {},
+    logProcess: true
+};
+function execGitCmd(args, cmdConfig) {
+    return new Promise(function (resolve, reject) {
+        if (!args.length) {
+            reject("No arguments were given");
+        }
+        cmdConfig = __assign({}, defaultConfig, cmdConfig);
+        if (cmdConfig.logProcess) {
+            var message = cmdConfig.customMsg ? cmdConfig.customMsg + "..." : "git " + args[0] + " is executing...";
+            console.log('\x1b[36m%s\x1b[0m', message);
+        }
+        var commandExecuter = (0,child_process__WEBPACK_IMPORTED_MODULE_0__.spawn)('git', args, cmdConfig.execOptions);
+        var stdOutData = '';
+        var stderrData = '';
+        commandExecuter.stdout.on('data', function (data) { return stdOutData += data; });
+        commandExecuter.stderr.on('data', function (data) { return stderrData += data; });
+        commandExecuter.on('close', function (code) { return code != 0 ? reject(stderrData.toString()) : resolve(stdOutData.toString()); });
+    });
+}
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
 /***/ 294:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -5476,9 +5521,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var github = __importStar(__webpack_require__(438));
+var git = __importStar(__webpack_require__(353));
 var run = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var base;
     return __generator(this, function (_a) {
-        console.log(github.context);
+        base = github.context.payload.base_ref;
+        console.log("Pull request base: " + base);
+        if (!base) {
+            console.log("No base repo found");
+            return [2 /*return*/];
+        }
+        git
+            .execGitCmd(["diff", base])
+            .then(function (res) { return console.log(res); })["catch"](function (err) {
+            console.log("Something faild while trying to get diff");
+            console.log(err);
+        });
         return [2 /*return*/];
     });
 }); };
@@ -5500,6 +5558,14 @@ module.exports = eval("require")("encoding");
 
 "use strict";
 module.exports = require("assert");
+
+/***/ }),
+
+/***/ 129:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("child_process");
 
 /***/ }),
 
@@ -5623,6 +5689,46 @@ module.exports = require("zlib");
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => module['default'] :
+/******/ 				() => module;
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop)
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	__webpack_require__.ab = __dirname + "/";/************************************************************************/
