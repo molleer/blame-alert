@@ -9,7 +9,7 @@ const run = async (): Promise<void> => {
    */
   console.log(github.context);
   if (github.context.payload.pull_request) {
-    console.log(github.context.payload.pull_request.head);
+    console.log(github.context.payload.pull_request.base);
     console.log(github.context.payload.pull_request.diff_url);
   }
 
