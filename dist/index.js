@@ -13936,42 +13936,45 @@ var github = __importStar(__webpack_require__(5438));
 var core = __importStar(__webpack_require__(2186));
 var git = __importStar(__webpack_require__(8353));
 var axios_1 = __importDefault(__webpack_require__(6545));
-var utils_1 = __webpack_require__(3030);
-var utils_2 = __webpack_require__(1314);
+var utils_1 = __webpack_require__(1314);
 var run = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var request, res, changes, emails, userNames, message, i, octokit;
+    var request, token, octokit, res, changes, emails, userNames, message, i;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 request = github.context.payload.pull_request;
+                token = core.getInput("GITHUB_TOKEN");
+                octokit = github.getOctokit(token);
+                //Checks if there have been a pull request
                 if (!request) {
                     console.log("No pull request found");
                     return [2 /*return*/];
                 }
-                return [4 /*yield*/, axios_1["default"].get(request.diff_url)["catch"](function (err) {
-                        return utils_2.handle("Failed to fetch diff file", err, { data: "" });
-                    })];
+                return [4 /*yield*/, axios_1["default"].get(request.diff_url, {
+                        params: { token: token }
+                    })["catch"](function (err) { return utils_1.handle("Failed to fetch diff file", err, { data: "" }); })];
             case 1:
                 res = _a.sent();
-                changes = utils_2.parseDiff(res.data);
+                changes = utils_1.parseDiff(res.data);
                 return [4 /*yield*/, getAuthors(changes)["catch"](function (err) {
-                        return utils_2.handle("Failed to fetch author emails", err, []);
+                        return utils_1.handle("Failed to fetch author emails", err, []);
                     })];
             case 2:
                 emails = _a.sent();
-                return [4 /*yield*/, utils_2.getUserNames(emails)["catch"](function () { return []; })];
+                return [4 /*yield*/, utils_1.getUserNames(emails)["catch"](function () { return []; })];
             case 3:
                 userNames = _a.sent();
+                userNames = userNames.filter(function (name) { return name !== github.context.actor; });
                 if (userNames.length == 0) {
-                    console.log("No existing code changed");
+                    console.log("No users to be alerted");
                     return [2 /*return*/];
                 }
                 message = "Your code will change with this PR!";
                 for (i = 0; i < userNames.length; i++) {
                     message += " @" + userNames[i];
                 }
-                octokit = github.getOctokit(core.getInput("GITHUB_TOKEN"));
-                octokit.issues.createComment(__assign(__assign({}, utils_1.context.repo), { issue_number: request.number, body: message }));
+                //Commenting on the PR
+                octokit.issues.createComment(__assign(__assign({}, github.context.repo), { issue_number: request.number, body: message }));
                 return [2 /*return*/];
         }
     });
@@ -13998,10 +14001,10 @@ var getAuthors = function (changes) { return __awaiter(void 0, void 0, void 0, f
                         "-L",
                         changes[i].from + "," + changes[i].to,
                         changes[i].file
-                    ])["catch"](function (err) { return utils_2.handle("Unable to execute git blame command", err, ""); })];
+                    ])["catch"](function (err) { return utils_1.handle("Unable to execute git blame command", err, ""); })];
             case 2:
                 blame = _a.sent();
-                emails.push.apply(emails, __spread(utils_2.parseBlame(String(blame))));
+                emails.push.apply(emails, __spread(utils_1.parseBlame(String(blame))));
                 _a.label = 3;
             case 3:
                 i++;

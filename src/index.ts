@@ -2,31 +2,34 @@ import * as github from "@actions/github";
 import * as core from "@actions/core";
 import * as git from "run-git-command";
 import Axios from "axios";
-import { context } from "@actions/github/lib/utils";
 import { Change, parseDiff, getUserNames, parseBlame, handle } from "./utils";
 
 const run = async (): Promise<void> => {
-  //Checks if there have been a pull request
   const request = github.context.payload.pull_request;
+  const token = core.getInput("GITHUB_TOKEN");
+  const octokit = github.getOctokit(token);
+
+  //Checks if there have been a pull request
   if (!request) {
     console.log("No pull request found");
     return;
   }
 
   //Fetches and parses diff
-  const res = await Axios.get(request.diff_url).catch(err =>
-    handle("Failed to fetch diff file", err, { data: "" })
-  );
+  const res = await Axios.get(request.diff_url, {
+    params: { token: token }
+  }).catch(err => handle("Failed to fetch diff file", err, { data: "" }));
   const changes: Change[] = parseDiff(res.data);
 
   //Retrieves the usernames of the authors of the modified code
   const emails: string[] = await getAuthors(changes).catch(err =>
     handle("Failed to fetch author emails", err, [])
   );
-  const userNames: string[] = await getUserNames(emails).catch(() => []);
+  let userNames: string[] = await getUserNames(emails).catch(() => []);
+  userNames = userNames.filter(name => name !== github.context.actor);
 
   if (userNames.length == 0) {
-    console.log("No existing code changed");
+    console.log("No users to be alerted");
     return;
   }
 
@@ -37,9 +40,8 @@ const run = async (): Promise<void> => {
   }
 
   //Commenting on the PR
-  const octokit = github.getOctokit(core.getInput("GITHUB_TOKEN"));
   octokit.issues.createComment({
-    ...context.repo,
+    ...github.context.repo,
     issue_number: request.number,
     body: message
   });
