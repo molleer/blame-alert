@@ -10142,6 +10142,17 @@ function wrappy (fn, cb) {
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -10223,7 +10234,7 @@ var core = __importStar(__webpack_require__(2186));
 var git = __importStar(__webpack_require__(8353));
 var utils_1 = __webpack_require__(1314);
 var run = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var request, token, octokit, changes, emails, userNames, message, i;
+    var request, token, octokit, res, changes, emails, userNames, message, i;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -10235,16 +10246,23 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                     console.log("No pull request found");
                     return [2 /*return*/];
                 }
-                //Fetches and parses diff
-                //git diff master add-file
-                //const res = git.execGitCmd(["diff", request.number]);
-                console.log(request);
-                return [2 /*return*/];
+                return [4 /*yield*/, git.execGitCmd([
+                        "diff",
+                        request.base.ref,
+                        request.head.ref
+                    ])];
             case 1:
+                res = _a.sent();
+                changes = utils_1.parseDiff(res.toString());
+                core.debug("Changes " + changesToString(changes));
+                return [4 /*yield*/, getAuthors(changes)["catch"](function (err) {
+                        return utils_1.handle("Failed to fetch author emails", err, []);
+                    })];
+            case 2:
                 emails = _a.sent();
                 core.debug("Author emails " + emails.toString());
                 return [4 /*yield*/, utils_1.getUserNames(emails)["catch"](function () { return []; })];
-            case 2:
+            case 3:
                 userNames = _a.sent();
                 userNames = userNames.filter(function (name) { return name !== github.context.actor; });
                 if (userNames.length == 0) {
@@ -10255,6 +10273,8 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                 for (i = 0; i < userNames.length; i++) {
                     message += " @" + userNames[i];
                 }
+                //Commenting on the PR
+                octokit.issues.createComment(__assign(__assign({}, github.context.repo), { issue_number: request.number, body: message }));
                 return [2 /*return*/];
         }
     });

@@ -1,7 +1,6 @@
 import * as github from "@actions/github";
 import * as core from "@actions/core";
 import * as git from "run-git-command";
-import Axios from "axios";
 import { Change, parseDiff, getUserNames, parseBlame, handle } from "./utils";
 
 const run = async (): Promise<void> => {
@@ -16,11 +15,12 @@ const run = async (): Promise<void> => {
   }
 
   //Fetches and parses diff
-  //git diff master add-file
-  //const res = git.execGitCmd(["diff", request.number]);
-  console.log(request);
-  return;
-  const changes: Change[] = parseDiff("res.data");
+  const res = await git.execGitCmd([
+    "diff",
+    request.base.ref,
+    request.head.ref
+  ]);
+  const changes: Change[] = parseDiff(res.toString());
   core.debug(`Changes ${changesToString(changes)}`);
 
   //Retrieves the usernames of the authors of the modified code
@@ -43,11 +43,11 @@ const run = async (): Promise<void> => {
   }
 
   //Commenting on the PR
-  /*octokit.issues.createComment({
+  octokit.issues.createComment({
     ...github.context.repo,
     issue_number: request.number,
     body: message
-  });*/
+  });
 };
 
 const changesToString = (change: Change[]): string => {
