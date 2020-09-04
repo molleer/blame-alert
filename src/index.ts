@@ -16,11 +16,11 @@ const run = async (): Promise<void> => {
   }
 
   //Fetches and parses diff
-  /*const res = await Axios.get(request.diff_url, {
-    params: { token: token }
-  }).catch(err => handle("Failed to fetch diff file", err, { data: "" }));*/
-  const res = await octokit.request({ method: "GET", url: request.diff_url });
-  console.log(res.data);
+  const res = await Axios.get(request.diff_url).catch(err =>
+    handle("Failed to fetch diff file, perhaps the repo is private", err, {
+      data: ""
+    })
+  );
   const changes: Change[] = parseDiff(res.data);
 
   //Retrieves the usernames of the authors of the modified code
