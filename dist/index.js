@@ -13950,7 +13950,11 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                     console.log("No pull request found");
                     return [2 /*return*/];
                 }
-                return [4 /*yield*/, axios_1["default"].get(request.diff_url)["catch"](function (err) {
+                return [4 /*yield*/, axios_1["default"].get(request.diff_url, {
+                        headers: {
+                            authorization: "Bearer " + token
+                        }
+                    })["catch"](function (err) {
                         return utils_1.handle("Failed to fetch diff file, perhaps the repo is private", err, {
                             data: ""
                         });

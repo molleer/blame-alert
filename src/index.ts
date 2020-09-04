@@ -16,7 +16,11 @@ const run = async (): Promise<void> => {
   }
 
   //Fetches and parses diff
-  const res = await Axios.get(request.diff_url).catch(err =>
+  const res = await Axios.get(request.diff_url, {
+    headers: {
+      authorization: `Bearer ${token}`
+    }
+  }).catch(err =>
     handle("Failed to fetch diff file, perhaps the repo is private", err, {
       data: ""
     })
