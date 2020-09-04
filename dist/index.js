@@ -13963,6 +13963,7 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
                     })];
             case 2:
                 emails = _a.sent();
+                core.debug(emails.toString());
                 return [4 /*yield*/, utils_1.getUserNames(emails)["catch"](function () { return []; })];
             case 3:
                 userNames = _a.sent();

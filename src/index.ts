@@ -27,6 +27,7 @@ const run = async (): Promise<void> => {
   const emails: string[] = await getAuthors(changes).catch(err =>
     handle("Failed to fetch author emails", err, [])
   );
+  core.debug(emails.toString());
   let userNames: string[] = await getUserNames(emails).catch(() => []);
   userNames = userNames.filter(name => name !== github.context.actor);
 
