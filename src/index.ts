@@ -1,6 +1,7 @@
 import * as github from "@actions/github";
 import * as core from "@actions/core";
 import * as git from "run-git-command";
+import Axios from "axios";
 import { Change, parseDiff, getUserNames, parseBlame, handle } from "./utils";
 
 const run = async (): Promise<void> => {
@@ -15,12 +16,12 @@ const run = async (): Promise<void> => {
   }
 
   //Fetches and parses diff
-  const res = await git.execGitCmd([
-    "diff",
-    request.base.ref,
-    request.head.ref
-  ]);
-  const changes: Change[] = parseDiff(res.toString());
+  const res = await Axios.get(request.diff_url).catch(err =>
+    handle("Failed to fetch diff file, perhaps the repo is private", err, {
+      data: ""
+    })
+  );
+  const changes: Change[] = parseDiff(res.data);
   core.debug(`Changes ${changesToString(changes)}`);
 
   //Retrieves the usernames of the authors of the modified code
@@ -75,6 +76,7 @@ const getAuthors = async (changes: Change[]): Promise<string[]> => {
         changes[i].file
       ])
       .catch(err => handle("Unable to execute git blame command", err, ""));
+    core.debug(String(blame));
     emails.push(...parseBlame(String(blame)));
   }
   return [...new Set(emails)];
