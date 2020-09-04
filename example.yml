@@ -1,0 +1,17 @@
+name: CI
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.base_ref }}
+          fetch-depth: 0
+      - name: Blame Alert
+        uses: molleer/blame-alert@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
