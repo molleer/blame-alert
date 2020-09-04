@@ -1,6 +1,6 @@
 # Blame alert
 
-GiHub action which tags users whose code has been altered in a PR. It uses `git blame` to determine who is the author of the code which has changed.
+GitHub action which tags users whose code has been altered in a PR. It uses `git blame` to determine who is the author of the code which has changed.
 
 ### Usage
 
