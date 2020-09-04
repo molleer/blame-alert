@@ -22,12 +22,13 @@ const run = async (): Promise<void> => {
     })
   );
   const changes: Change[] = parseDiff(res.data);
+  core.debug(`Changes ${changes.toString()}`);
 
   //Retrieves the usernames of the authors of the modified code
   const emails: string[] = await getAuthors(changes).catch(err =>
     handle("Failed to fetch author emails", err, [])
   );
-  core.debug(emails.toString());
+  core.debug(`Author emails ${emails.toString()}`);
   let userNames: string[] = await getUserNames(emails).catch(() => []);
   userNames = userNames.filter(name => name !== github.context.actor);
 

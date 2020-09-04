@@ -14,7 +14,9 @@ export interface Change {
 export const parseBlame = (blame: string): string[] => {
   const foundMails = blame.match(/author-mail <.*?>/g);
   if (!foundMails) return [];
-  return foundMails.map(mail => mail.substr(13, mail.length - 14));
+  return [
+    ...new Set(foundMails.map(mail => mail.substr(13, mail.length - 14)))
+  ];
 };
 
 /**

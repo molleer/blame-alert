@@ -16,32 +16,67 @@ const diff =
   "+Coming documentation soon\n";
 
 const blame =
-  "2ab800e13bc047c7667edffb2b72adb2456e19c1 1 1 2\n" +
+  "c400a404224acd4431858b70b8b5394b0340ccbe 1 1 1\n" +
   "author David Möller\n" +
-  "author-mail <31804935+molleer@users.noreply.github.com>\n" +
-  "author-time 1599060125\n" +
+  "author-mail <davidm@student.chalmers.se>\n" +
+  "author-time 1599201270\n" +
+  "author-tz +0200\n" +
+  "committer David Möller\n" +
+  "committer-mail <davidm@student.chalmers.se>\n" +
+  "committer-time 1599201270\n" +
+  "committer-tz +0200\n" +
+  "summary Changed first line\n" +
+  "previous b46c3de5efb5b6890f2ec5e0f096744fc12b08fd newFile.txt\n" +
+  "filename newFile.txt\n" +
+  "	This is a new line\n" +
+  "b46c3de5efb5b6890f2ec5e0f096744fc12b08fd 2 2 4\n" +
+  "author davmoller99\n" +
+  "author-mail <67462443+davmoller99@users.noreply.github.com>\n" +
+  "author-time 1599201158\n" +
   "author-tz +0200\n" +
   "committer GitHub\n" +
   "committer-mail <noreply@github.com>\n" +
-  "committer-time 1599060125\n" +
+  "committer-time 1599201158\n" +
   "committer-tz +0200\n" +
-  "summary Initial commit\n" +
-  "boundary\n" +
-  "filename README.md\n" +
-  "        # blame-alert\n" +
-  "2ab800e13bc047c7667edffb2b72adb2456e19c1 2 2\n" +
-  "author David Möller\n" +
-  "author-mail <31804935+molleer@users.noreply.github.com>\n" +
-  "author-time 1599060125\n" +
+  "summary Create newFile.txt\n" +
+  "filename newFile.txt\n" +
+  "	is\n" +
+  "b46c3de5efb5b6890f2ec5e0f096744fc12b08fd 3 3\n" +
+  "author davmoller99\n" +
+  "author-mail <67462443+davmoller99@users.noreply.github.com>\n" +
+  "author-time 1599201158\n" +
   "author-tz +0200\n" +
   "committer GitHub\n" +
   "committer-mail <noreply@github.com>\n" +
-  "committer-time 1599060125\n" +
+  "committer-time 1599201158\n" +
   "committer-tz +0200\n" +
-  "summary Initial commit\n" +
-  "boundary\n" +
-  "filename README.md\n" +
-  "        Gihub action which tags users whose code has been removed in a PR";
+  "summary Create newFile.txt\n" +
+  "filename newFile.txt\n" +
+  "	a\n" +
+  "b46c3de5efb5b6890f2ec5e0f096744fc12b08fd 4 4\n" +
+  "author davmoller99\n" +
+  "author-mail <67462443+davmoller99@users.noreply.github.com>\n" +
+  "author-time 1599201158\n" +
+  "author-tz +0200\n" +
+  "committer GitHub\n" +
+  "committer-mail <noreply@github.com>\n" +
+  "committer-time 1599201158\n" +
+  "committer-tz +0200\n" +
+  "summary Create newFile.txt\n" +
+  "filename newFile.txt\n" +
+  "	new\n" +
+  "b46c3de5efb5b6890f2ec5e0f096744fc12b08fd 5 5\n" +
+  "author davmoller99\n" +
+  "author-mail <67462443+davmoller99@users.noreply.github.com>\n" +
+  "author-time 1599201158\n" +
+  "author-tz +0200\n" +
+  "committer GitHub\n" +
+  "committer-mail <noreply@github.com>\n" +
+  "committer-time 1599201158\n" +
+  "committer-tz +0200\n" +
+  "summary Create newFile.txt\n" +
+  "filename newFile.txt\n" +
+  "	file\n";
 
 describe("Testing the 'parseDiff' method", () => {
   it("Should parse the diff to a change object", () => {
@@ -53,7 +88,10 @@ describe("Testing the 'parseDiff' method", () => {
 describe("Testing the 'parseBlame' method", () => {
   it("Should return the email of the authors", () => {
     const emails = parseBlame(blame);
-    assert.equal(emails[0], "31804935+molleer@users.noreply.github.com");
+    assert.deepEqual(emails, [
+      "davidm@student.chalmers.se",
+      "67462443+davmoller99@users.noreply.github.com"
+    ]);
   });
 });
 

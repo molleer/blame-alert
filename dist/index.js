@@ -13958,12 +13958,13 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
             case 1:
                 res = _a.sent();
                 changes = utils_1.parseDiff(res.data);
+                core.debug("Changes " + changes.toString());
                 return [4 /*yield*/, getAuthors(changes)["catch"](function (err) {
                         return utils_1.handle("Failed to fetch author emails", err, []);
                     })];
             case 2:
                 emails = _a.sent();
-                core.debug(emails.toString());
+                core.debug("Author emails " + emails.toString());
                 return [4 /*yield*/, utils_1.getUserNames(emails)["catch"](function () { return []; })];
             case 3:
                 userNames = _a.sent();
@@ -14116,7 +14117,7 @@ exports.parseBlame = function (blame) {
     var foundMails = blame.match(/author-mail <.*?>/g);
     if (!foundMails)
         return [];
-    return foundMails.map(function (mail) { return mail.substr(13, mail.length - 14); });
+    return __spread(new Set(foundMails.map(function (mail) { return mail.substr(13, mail.length - 14); })));
 };
 /**
  * Parses the git diff output to a list of Change objects
