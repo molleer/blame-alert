@@ -26,7 +26,7 @@ jobs:
 
 ### Example
 
-User1 has made a new PR to a repo which is using `molleer/blame-alert`. He/she has deleted a few lines of code which User2 had written. When the PR is created, this comment is created by `molleer/blame-alert`.
+User1 has made a new PR to a repo which is using `molleer/blame-alert`. He/she has deleted a few lines of code which User2 had written. When the PR is created, this comment is added to the PR by `molleer/blame-alert`.
 
 ![example](https://raw.githubusercontent.com/molleer/blame-alert/master/example.png)
 
