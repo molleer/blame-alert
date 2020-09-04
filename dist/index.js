@@ -14015,6 +14015,7 @@ var getAuthors = function (changes) { return __awaiter(void 0, void 0, void 0, f
                     ])["catch"](function (err) { return utils_1.handle("Unable to execute git blame command", err, ""); })];
             case 2:
                 blame = _a.sent();
+                core.debug(String(blame));
                 emails.push.apply(emails, __spread(utils_1.parseBlame(String(blame))));
                 _a.label = 3;
             case 3:
