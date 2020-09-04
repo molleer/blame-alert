@@ -13958,7 +13958,7 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
             case 1:
                 res = _a.sent();
                 changes = utils_1.parseDiff(res.data);
-                core.debug("Changes " + changes.toString());
+                core.debug("Changes " + changesToString(changes));
                 return [4 /*yield*/, getAuthors(changes)["catch"](function (err) {
                         return utils_1.handle("Failed to fetch author emails", err, []);
                     })];
@@ -13983,6 +13983,13 @@ var run = function () { return __awaiter(void 0, void 0, void 0, function () {
         }
     });
 }); };
+var changesToString = function (change) {
+    var res = "";
+    for (var i = 0; i < change.length; i++) {
+        res += change[i].file + ",f:" + change[i].from + ",t:" + change[i].to + "\n";
+    }
+    return res;
+};
 /**
  * Fetches author emails
  * @param changes all changes in the code

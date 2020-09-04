@@ -22,7 +22,7 @@ const run = async (): Promise<void> => {
     })
   );
   const changes: Change[] = parseDiff(res.data);
-  core.debug(`Changes ${changes.toString()}`);
+  core.debug(`Changes ${changesToString(changes)}`);
 
   //Retrieves the usernames of the authors of the modified code
   const emails: string[] = await getAuthors(changes).catch(err =>
@@ -49,6 +49,14 @@ const run = async (): Promise<void> => {
     issue_number: request.number,
     body: message
   });
+};
+
+const changesToString = (change: Change[]): string => {
+  let res = "";
+  for (let i = 0; i < change.length; i++) {
+    res += `${change[i].file},f:${change[i].from},t:${change[i].to}\n`;
+  }
+  return res;
 };
 
 /**
