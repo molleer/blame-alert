@@ -16,16 +16,11 @@ const run = async (): Promise<void> => {
   }
 
   //Fetches and parses diff
-  const res = await Axios.get(request.diff_url, {
-    headers: {
-      authorization: `Bearer ${token}`
-    }
-  }).catch(err =>
-    handle("Failed to fetch diff file, perhaps the repo is private", err, {
-      data: ""
-    })
-  );
-  const changes: Change[] = parseDiff(res.data);
+  //git diff master add-file
+  //const res = git.execGitCmd(["diff", request.number]);
+  console.log(request);
+  return;
+  const changes: Change[] = parseDiff("res.data");
   core.debug(`Changes ${changesToString(changes)}`);
 
   //Retrieves the usernames of the authors of the modified code
@@ -48,11 +43,11 @@ const run = async (): Promise<void> => {
   }
 
   //Commenting on the PR
-  octokit.issues.createComment({
+  /*octokit.issues.createComment({
     ...github.context.repo,
     issue_number: request.number,
     body: message
-  });
+  });*/
 };
 
 const changesToString = (change: Change[]): string => {
@@ -80,7 +75,6 @@ const getAuthors = async (changes: Change[]): Promise<string[]> => {
         changes[i].file
       ])
       .catch(err => handle("Unable to execute git blame command", err, ""));
-    core.debug(String(blame));
     emails.push(...parseBlame(String(blame)));
   }
   return [...new Set(emails)];
